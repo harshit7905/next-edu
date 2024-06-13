@@ -62,22 +62,23 @@ export const register = TryCatch(async (req, res) => {
 } 
 )
 
-
+//activation token used for time bound
 export const verifyUser = TryCatch(async (req, res) => {
   const { otp, activationToken } = req.body;
 
   const verify = jwt.verify(activationToken, process.env.Activation_Secret);
 
-  if (!verify)
+  if (!verify) 
     return res.status(400).json({
       message: "Otp Expired",
     });
-
-  if (verify.otp !== otp)
-    return res.status(400).json({
-      message: "Wrong Otp",
-    });
-
+//verify.otp will have correct otp
+  
+    if (verify.otp !== otp)
+        return res.status(400).json({
+          message: "Wrong Otp",
+        });
+        console.log(verify.user.name);
   await User.create({
     name: verify.user.name,
     email: verify.user.email,
@@ -85,37 +86,37 @@ export const verifyUser = TryCatch(async (req, res) => {
   });
 
   res.json({
-    message: "User Registered",
+    message: "User Registered Successfully",
   });
 });
 
-export const loginUser = TryCatch(async (req, res) => {
-  const { email, password } = req.body;
+// export const loginUser = TryCatch(async (req, res) => {
+//   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+//   const user = await User.findOne({ email });
 
-  if (!user)
-    return res.status(400).json({
-      message: "No User with this email",
-    });
+//   if (!user)
+//     return res.status(400).json({
+//       message: "No User with this email",
+//     });
 
-  const mathPassword = await bcrypt.compare(password, user.password);
+//   const mathPassword = await bcrypt.compare(password, user.password);
 
-  if (!mathPassword)
-    return res.status(400).json({
-      message: "wrong Password",
-    });
+//   if (!mathPassword)
+//     return res.status(400).json({
+//       message: "wrong Password",
+//     });
 
-  const token = jwt.sign({ _id: user._id }, process.env.Jwt_Sec, {
-    expiresIn: "15d",
-  });
+//   const token = jwt.sign({ _id: user._id }, process.env.Jwt_Sec, {
+//     expiresIn: "15d",
+//   });
 
-  res.json({
-    message: `Welcome back ${user.name}`,
-    token,
-    user,
-  });
-});
+//   res.json({
+//     message: `Welcome back ${user.name}`,
+//     token,
+//     user,
+//   });
+// });
 
 // export const myProfile = TryCatch(async (req, res) => {
 //   const user = await User.findById(req.user._id);
