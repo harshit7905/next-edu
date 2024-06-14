@@ -90,36 +90,41 @@ export const verifyUser = TryCatch(async (req, res) => {
   });
 });
 
-// export const loginUser = TryCatch(async (req, res) => {
-//   const { email, password } = req.body;
 
-//   const user = await User.findOne({ email });
+export const loginUser = TryCatch(async (req, res) => {
+  const { email, password } = req.body;
 
-//   if (!user)
-//     return res.status(400).json({
-//       message: "No User with this email",
-//     });
 
-//   const mathPassword = await bcrypt.compare(password, user.password);
+  const user = await User.findOne({ email });
 
-//   if (!mathPassword)
-//     return res.status(400).json({
-//       message: "wrong Password",
-//     });
+  if (!user)
+    return res.status(400).json({
+      message: "No User with this email",
+    });
 
-//   const token = jwt.sign({ _id: user._id }, process.env.Jwt_Sec, {
-//     expiresIn: "15d",
-//   });
+  const mathPassword = await bcrypt.compare(password, user.password);
 
-//   res.json({
-//     message: `Welcome back ${user.name}`,
-//     token,
-//     user,
-//   });
-// });
+  if (!mathPassword)
+    return res.status(400).json({
+      message: "wrong Password",
+    });
 
-// export const myProfile = TryCatch(async (req, res) => {
-//   const user = await User.findById(req.user._id);
+   
 
-//   res.json({ user });
-// });
+  const token = jwt.sign({ _id: user._id }, process.env.Activation_Secret, {
+    expiresIn: "15d",
+  });
+  
+
+  res.json({
+    message: `Welcome back ${user.name}`,
+    token,
+    user,
+  });
+});
+
+export const myProfile = TryCatch(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  res.json({ user });
+});
