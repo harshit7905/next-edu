@@ -1,5 +1,5 @@
 
-# Eventing
+# next-edu
 ### E-Learning Platform
 #### By **[Harshit Verma](https://github.com/harshit7905)**
 
